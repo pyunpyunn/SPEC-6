@@ -10,13 +10,13 @@ if($_POST){
         exit;
     }
 
-    // If caller requested to return to program flow, redirect there
+    
     if ($returnTo === 'program'){
         header("Location: index.php?section=program&page=programList&progcollid={$schoolID}", true, 302);
         exit;
     }
 
-    // Default: department flow
+
     header("Location: index.php?section=department&page=departmentList&deptcollid={$schoolID}", true, 302);
     exit;
 

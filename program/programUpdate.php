@@ -12,7 +12,7 @@ if(!$prog) {
     header("Location: index.php?section=program&page=programList", true, 301);
     exit;
 }
-// Clear program-specific session errors on initial GET (unless user submitted form)
+
 if(empty($_SESSION['input']['progFullName'])){
     unset($_SESSION['errors']['progFullName']);
     unset($_SESSION['errors']['progShortName']);

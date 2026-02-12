@@ -25,7 +25,6 @@
    $dbStatement->bindParam('limit', $limit, PDO::PARAM_INT);
    $dbStatement->execute();
 
-//    $dbStatement->execute(['offset' => $offset, 'limit' => $limit]);
    
    $schools = $dbStatement->fetchAll();
 ?>

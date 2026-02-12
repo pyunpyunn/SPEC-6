@@ -38,17 +38,11 @@ if ($progcollid){
                 <button type="submit" name="selectSchool" class="btn btn-info">Select School</button>
             </td>
         </tr>
-        <tr>
-            <td>
-                
-            </td>
-        </tr>
     </table>
 </form>
 
-<!-- Select Department: only visible after school selected -->
 <?php if ($progcollid && $school): ?>
-    <form action="index.php?section=program&page=processDepartmentChoice" method="post">
+    <form id="department-form" action="index.php?section=program&page=processDepartmentChoice" method="post">
         <input type="hidden" name="progcollid" value="<?php echo htmlspecialchars($progcollid); ?>">
         <table>
             <tr>
@@ -59,14 +53,36 @@ if ($progcollid){
                             <option value="<?php echo $d['deptid']; ?>"><?php echo $d['deptfullname']; ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit" name="selectDepartment" class="btn btn-info">Select Department</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    
+                    <button type="submit" id="selectDepartmentBtn" name="selectDepartment" class="btn btn-info">Select Department</button>
                 </td>
             </tr>
         </table>
     </form>
 <?php endif; ?>
+<script>
+(function(){
+    var schoolSel = document.getElementById('select-school');
+    var deptSel = document.getElementById('select-department');
+    var selectDeptBtn = document.getElementById('selectDepartmentBtn');
+    var deptForm = document.getElementById('department-form');
+
+    if(schoolSel){
+        schoolSel.addEventListener('change', function(){
+            if(deptForm) deptForm.style.display = 'none'; 
+            if(deptSel) deptSel.selectedIndex = 0;
+            if(selectDeptBtn) selectDeptBtn.disabled = true;
+        });
+        schoolSel.addEventListener('input', function(){
+            if(selectDeptBtn) selectDeptBtn.disabled = !this.value;
+        });
+    }
+
+    if(deptSel){
+        deptSel.addEventListener('input', function(){
+            if(selectDeptBtn) selectDeptBtn.disabled = !this.value;
+        });
+    }
+
+    if(selectDeptBtn) selectDeptBtn.disabled = !schoolSel || !schoolSel.value;
+})();
+</script>

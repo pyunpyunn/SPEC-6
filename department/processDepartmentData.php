@@ -47,7 +47,7 @@ if($_POST && isset($_POST['saveNewDepartmentEntry'])){
     if(filter_var($deptCollID, FILTER_VALIDATE_INT) === false){
         $_SESSION['errors']['deptCollID'] = "Invalid College ID";
     } else {
-        // check college exists
+        
         $chk = $db->prepare("SELECT collid FROM colleges WHERE collid = :collid");
         $chk->execute(['collid' => $deptCollID]);
         if(!$chk->fetch()) $_SESSION['errors']['deptCollID'] = "Selected College does not exist";
@@ -63,7 +63,7 @@ if($_POST && isset($_POST['saveNewDepartmentEntry'])){
     } else header("Location: $entryURL", true, 301);
 }
 
-// Clear changes form (reset)
+
 if($_POST && isset($_POST['clearChanges'])){
     $_SESSION['input']['deptFullName'] = null;
     $_SESSION['input']['deptShortName'] = null;
@@ -82,7 +82,7 @@ if($_POST && isset($_POST['saveDepartmentChanges'])){
     $deptShortName = $_POST['deptShortName'] ?? '';
     $deptCollID = $_POST['deptCollID'] ?? $_POST['collid'] ?? null;
 
-    // Store input in session
+    
     $_SESSION['input']['deptFullName'] = $deptFullName;
     $_SESSION['input']['deptShortName'] = $deptShortName;
     $_SESSION['input']['deptCollID'] = $deptCollID;
@@ -91,21 +91,21 @@ if($_POST && isset($_POST['saveDepartmentChanges'])){
         $_SESSION['errors'] = [];
     }
 
-    // Validate Department Full Name
+    
     if(filter_var($deptFullName, FILTER_VALIDATE_REGEXP, ["options"=>["regexp"=>"/^[A-z\s\-]+$/"]]) === false){
         $_SESSION['errors']['deptFullName'] = "Invalid Full Name entry or format";
     } else {
         $_SESSION['errors']['deptFullName'] = "";
     }
 
-    // Validate Department Short Name
+    
     if(filter_var($deptShortName, FILTER_VALIDATE_REGEXP, ["options"=>["regexp"=>"/^[A-z\s\-]+$/"]]) === false){
         $_SESSION['errors']['deptShortName'] = "Invalid Short Name entry or format";
     } else {
         $_SESSION['errors']['deptShortName'] = "";
     }
 
-    // Validate College ID
+    
     if(filter_var($deptCollID, FILTER_VALIDATE_INT) === false){
         $_SESSION['errors']['deptCollID'] = "Invalid College ID";
     } else {
@@ -128,14 +128,13 @@ if($_POST && isset($_POST['saveDepartmentChanges'])){
 
 if($_POST && isset($_POST['confirmDeleteDepartment'])){
     $deptid = $_POST['deptid'];
-    // consider hierarchy: delete programs and students under this department
-    // First delete students of programs under this dept
+    
     $delStudents = $db->prepare("DELETE s FROM students s JOIN programs p ON s.studprogid = p.progid WHERE p.progcolldeptid = :deptid");
     $delStudents->execute(['deptid' => $deptid]);
-    // delete programs under dept
+    
     $delPrograms = $db->prepare("DELETE FROM programs WHERE progcolldeptid = :deptid");
     $delPrograms->execute(['deptid' => $deptid]);
-    // delete department
+    
     $delDept = $db->prepare("DELETE FROM departments WHERE deptid = :deptid");
     $res = $delDept->execute(['deptid' => $deptid]);
     if($res) $_SESSION['messages']['updateSuccess'] = "Department deleted";

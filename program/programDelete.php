@@ -13,17 +13,17 @@ if(!$prog) {
     exit;
 }
 
-// fetch parent college
+
 $collStmt = $db->prepare("SELECT * FROM colleges WHERE collid = :collid");
 $collStmt->execute(['collid' => $prog['progcollid']]);
 $coll = $collStmt->fetch();
 
-// fetch parent department
+
 $deptStmt = $db->prepare("SELECT * FROM departments WHERE deptid = :deptid");
 $deptStmt->execute(['deptid' => $prog['progcolldeptid']]);
 $dept = $deptStmt->fetch();
 
-// fetch students under program
+
 ?>
 <h1>Program Delete</h1>
 <span id="pageMessages">

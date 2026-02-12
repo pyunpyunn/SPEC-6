@@ -56,6 +56,15 @@ if($_POST && isset($_POST['saveNewProgramEntry'])){
         $_SESSION['errors']['progDeptID'] = "Invalid Department ID";
     } else $_SESSION['errors']['progDeptID'] = "";
 
+    // Verify department belongs to the selected college
+    if(empty($_SESSION['errors']['progCollID']) && empty($_SESSION['errors']['progDeptID'])){
+        $chk = $db->prepare("SELECT deptid FROM departments WHERE deptid = :deptid AND deptcollid = :collid");
+        $chk->execute(['deptid' => $progDeptID, 'collid' => $progCollID]);
+        if (!$chk->fetchColumn()){
+            $_SESSION['errors']['progDeptID'] = "Selected department does not belong to selected college";
+        }
+    }
+
     if(empty($_SESSION['errors']['progID']) && empty($_SESSION['errors']['progFullName']) && empty($_SESSION['errors']['progShortName']) && empty($_SESSION['errors']['progCollID']) && empty($_SESSION['errors']['progDeptID'])){
         $stmt = $db->prepare("INSERT INTO programs (progid, progfullname, progshortname, progcollid, progcolldeptid) VALUES (:progid, :progfullname, :progshortname, :progcollid, :progcolldeptid)");
         $res = $stmt->execute(['progid'=>$progID,'progfullname'=>$progFullName,'progshortname'=>$progShortName,'progcollid'=>$progCollID,'progcolldeptid'=>$progDeptID]);
@@ -91,14 +100,14 @@ if($_POST && isset($_POST['saveProgramChanges'])){
         $_SESSION['errors'] = [];
     }
 
-    // Validate Program Full Name
+    
     if(filter_var($progFullName, FILTER_VALIDATE_REGEXP, ["options"=>["regexp"=>"/^[A-z\s\-]+$/"]]) === false){
         $_SESSION['errors']['progFullName'] = "Invalid Full Name entry or format";
     } else {
         $_SESSION['errors']['progFullName'] = "";
     }
 
-    // Validate Program Short Name
+    
     if(filter_var($progShortName, FILTER_VALIDATE_REGEXP, ["options"=>["regexp"=>"/^[A-z\s\-]+$/"]]) === false){
         $_SESSION['errors']['progShortName'] = "Invalid Short Name entry or format";
     } else {
@@ -122,10 +131,10 @@ if($_POST && isset($_POST['saveProgramChanges'])){
 
 if($_POST && isset($_POST['confirmDeleteProgram'])){
     $progid = $_POST['progid'];
-    // delete students under this program
+    
     $delStudents = $db->prepare("DELETE FROM students WHERE studprogid = :progid");
     $delStudents->execute(['progid'=>$progid]);
-    // delete program
+    
     $delProg = $db->prepare("DELETE FROM programs WHERE progid = :progid");
     $res = $delProg->execute(['progid'=>$progid]);
     if($res) $_SESSION['messages']['deleteSuccess'] = "Program deleted";

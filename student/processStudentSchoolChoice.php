@@ -9,8 +9,7 @@ if($_POST){
         header("Location: {$origin}", true, 302);
         exit;
     }
-
-    // If caller requested to return to student flow, redirect there
+    
     if ($returnTo === 'student'){
         header("Location: index.php?section=student&page=studentList&studcollid={$schoolID}", true, 302);
         exit;

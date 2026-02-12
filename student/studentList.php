@@ -44,17 +44,12 @@ if ($deptid){
                 <button type="submit" name="selectSchool" class="btn btn-info">Select School</button>
             </td>
         </tr>
-        <tr>
-            <td>
-                
-            </td>
-        </tr>
     </table>
 </form>
 
 <!-- Select Department: only visible after school selected -->
  <?php if ($studcollid && $school): ?>
-    <form action="index.php?section=student&page=processStudentDepartmentChoice" method="post">
+     <form id="department-form" action="index.php?section=student&page=processStudentDepartmentChoice" method="post">
         <input type="hidden" name="studcollid" value="<?php echo htmlspecialchars($studcollid); ?>">
         <table>
             <tr>
@@ -68,17 +63,12 @@ if ($deptid){
                     <button type="submit" name="selectDepartment" class="btn btn-info">Select Department</button>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    
-                </td>
-            </tr>
         </table>
     </form>
     
     <!-- Select Program: visible after department selected on same page -->
     <?php if ($deptid): ?>
-        <form action="index.php?section=student&page=processStudentProgramChoice" method="post">
+        <form id="program-form" action="index.php?section=student&page=processStudentProgramChoice" method="post">
             <input type="hidden" name="studcollid" value="<?php echo htmlspecialchars($studcollid); ?>">
             <input type="hidden" name="deptid" value="<?php echo htmlspecialchars($deptid); ?>">
             <table>
@@ -90,10 +80,55 @@ if ($deptid){
                                 <option value="<?php echo $p['progid']; ?>"><?php echo $p['progfullname']; ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <button type="submit" name="selectProgram" class="btn btn-info">Select Program</button>
+                        <button type="submit" id="selectProgramBtn" name="selectProgram" class="btn btn-info">Select Program</button>
                     </td>
                 </tr>
             </table>
         </form>
     <?php endif; ?>
 <?php endif; ?>
+
+<script>
+    
+(function(){
+    var schoolSel = document.getElementById('select-school');
+    var deptSel = document.getElementById('select-department');
+    var progSel = document.getElementById('select-program');
+    var selectDeptBtn = document.querySelector('button[name="selectDepartment"]');
+    var selectProgBtn = document.getElementById('selectProgramBtn');
+    var deptForm = document.getElementById('department-form');
+    var progForm = document.getElementById('program-form');
+
+    if(schoolSel){
+        schoolSel.addEventListener('change', function(){
+            
+            if(deptForm) deptForm.style.display = 'none';
+            if(progForm) progForm.style.display = 'none';
+            
+            if(deptSel){ deptSel.selectedIndex = 0; }
+            if(progSel){ progSel.selectedIndex = 0; }
+            if(selectDeptBtn) selectDeptBtn.disabled = true;
+            if(selectProgBtn) selectProgBtn.disabled = true;
+        });
+        
+        schoolSel.addEventListener('input', function(){
+            if(selectDeptBtn) selectDeptBtn.disabled = !this.value;
+        });
+    }
+
+    if(deptSel){
+        deptSel.addEventListener('change', function(){
+            
+            if(progForm) progForm.style.display = 'none';
+            if(progSel) progSel.selectedIndex = 0; 
+            if(selectProgBtn) selectProgBtn.disabled = true;
+        });
+        deptSel.addEventListener('input', function(){
+            if(selectProgBtn) selectProgBtn.disabled = !this.value;
+        });
+    }
+
+    if(selectDeptBtn) selectDeptBtn.disabled = !schoolSel || !schoolSel.value;
+    if(selectProgBtn) selectProgBtn.disabled = !deptSel || !deptSel.value;
+})();
+</script>

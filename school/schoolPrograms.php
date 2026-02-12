@@ -3,10 +3,10 @@ require_once("data/db.php");
 session_start();
 session_regenerate_id();
 
-// Get program ID from URL
+
 $programID = $_GET['progid'] ?? null;
 
-// Fetch program info along with college and department
+
 $dbStatement = $db->prepare("
     SELECT p.*, c.collfullname, c.collshortname, d.deptfullname, d.deptshortname
     FROM programs p
@@ -17,7 +17,7 @@ $dbStatement = $db->prepare("
 $dbStatement->execute(['programID' => $programID]);
 $program = $dbStatement->fetch();
 
-// Fetch all colleges and departments for select dropdowns
+
 $collegesStmt = $db->query("SELECT collid, collfullname FROM colleges");
 $colleges = $collegesStmt->fetchAll();
 

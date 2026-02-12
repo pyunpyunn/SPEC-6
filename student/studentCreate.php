@@ -19,11 +19,11 @@ $studcollid = $_GET['studcollid'] ?? null;
     
     <table>
         <tr>
-            <td style="width: 10em;">School ID:</td>
-            <td style="width: 30em;"><input type="text" id="schoolID" name="schoolID" value="" class="data-input"></td>
+            <td style="width: 10em;">Student ID:</td>
+            <td style="width: 30em;"><input type="text" id="studentID" name="studentID" value="<?= htmlspecialchars($_SESSION['input']['studentID'] ?? ''); ?>" class="data-input"></td>
             <td>
                 <span>
-                    <?php echo $_SESSION['errors']['schoolID'] ?? null; ?>
+                    <?php echo $_SESSION['errors']['studentID'] ?? null; ?>
                 </span>
             </td>
         </tr>

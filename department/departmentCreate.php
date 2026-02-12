@@ -2,7 +2,7 @@
 session_start();
 session_regenerate_id();
 require_once("data/db.php");
-// show any messages/errors
+
 ?>
 <h1>Department Create</h1>
 <span>

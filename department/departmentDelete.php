@@ -13,12 +13,12 @@ if(!$dept) {
     exit;
 }
 
-// fetch parent college
+
 $collStmt = $db->prepare("SELECT * FROM colleges WHERE collid = :collid");
 $collStmt->execute(['collid' => $dept['deptcollid']]);
 $coll = $collStmt->fetch();
 
-// fetch child programs for info
+
 $progStmt = $db->prepare("SELECT progid, progfullname FROM programs WHERE progcolldeptid = :deptid");
 $progStmt->execute(['deptid' => $deptid]);
 $progs = $progStmt->fetchAll();

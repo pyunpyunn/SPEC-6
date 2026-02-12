@@ -12,27 +12,23 @@ $department = null;
 $program = null;
 $students = [];
 
-// Get school info
 if ($studcollid){
     $schoolStmt = $db->prepare("SELECT * FROM colleges WHERE collid = :collid");
     $schoolStmt->execute(['collid' => $studcollid]);
     $school = $schoolStmt->fetch();
 }
 
-// Get department info
 if ($deptid){
     $deptStmt = $db->prepare("SELECT * FROM departments WHERE deptid = :deptid");
     $deptStmt->execute(['deptid' => $deptid]);
     $department = $deptStmt->fetch();
 }
 
-// Get program info
 if ($progid){
     $progStmt = $db->prepare("SELECT * FROM programs WHERE progid = :progid");
     $progStmt->execute(['progid' => $progid]);
     $program = $progStmt->fetch();
     
-    // Get students for this program
     $studStmt = $db->prepare("SELECT * FROM students WHERE studprogid = :progid");
     $studStmt->execute(['progid' => $progid]);
     $students = $studStmt->fetchAll();
@@ -55,20 +51,22 @@ if ($progid){
 
     <table>
         <tr style="background-color: #4CAF50; color: white; height: 60px; text-align: center;">
-            <th>ID #</th>
+            <th>Class No</th>
+            <th>Student ID</th>
             <th>Full Name</th>
             <th>Middle Name</th>
             <th>Last Name</th>
             <th>Year</th>
             <th>Actions</th>
         </tr>
-        <?php foreach ($students as $s): ?>
+        <?php $i = 1; foreach ($students as $s): ?>
         <tr>
-            <td><?php echo $s['studid']; ?></td>
-            <td><?php echo $s['studfirstname']; ?></td>
-            <td><?php echo $s['studmidname']; ?></td>
-            <td><?php echo $s['studlastname']; ?></td>
-            <td><?php echo $s['studyear']; ?></td>
+            <td><?php echo $i++; ?></td>
+            <td><?php echo htmlspecialchars($s['studid']); ?></td>
+            <td><?php echo htmlspecialchars($s['studfirstname']); ?></td>
+            <td><?php echo htmlspecialchars($s['studmidname']); ?></td>
+            <td><?php echo htmlspecialchars($s['studlastname']); ?></td>
+            <td><?php echo htmlspecialchars($s['studyear']); ?></td>
             <td>
                 <a href="index.php?section=student&page=studentUpdate&studid=<?php echo $s['studid']; ?>" class="btn btn-info">Update</a>
                 <a href="index.php?section=student&page=studentDelete&studid=<?php echo $s['studid']; ?>" class="btn btn-danger">Delete</a>

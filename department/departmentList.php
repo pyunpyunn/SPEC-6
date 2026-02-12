@@ -5,7 +5,7 @@
 
     $deptcollid = $_GET['deptcollid'] ?? null;
     if (!$deptcollid) {
-        // No college selected — redirect to school list to choose a school
+        
         header('Location: index.php?section=school&page=schoolList', true, 302);
         exit;
     }
@@ -22,7 +22,7 @@
 <h1>Department List - <?php echo $school['collfullname']; ?></h1>
 <div>
     <br>
-    <h2><a href="index.php?section=department&page=departmentCreate" class="btn btn-primary">Create Department</a></h2>
+    <h2><a href="index.php?section=department&page=departmentCreate&deptcollid=<?php echo htmlspecialchars($deptcollid); ?>" class="btn btn-primary">Create Department</a></h2>
     <br>
 </div>
 <table>
@@ -44,10 +44,11 @@
     </tr>
     <?php endforeach; ?>
     <tr>
-        <td colspan="4">
+        <td colspan="2">
             <span>
                 Total of: <?= count($departments) ?> <?= (count($departments) === 1) ? 'department' : 'departments' ?> in the database
             </span>
         </td>
+        <td colspan="2"></td>
     </tr>
 </table>

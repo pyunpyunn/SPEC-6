@@ -10,20 +10,20 @@ $school = null;
 $department = null;
 $programs = [];
 
-// Get school info
+
 if ($progcollid){
     $schoolStmt = $db->prepare("SELECT * FROM colleges WHERE collid = :collid");
     $schoolStmt->execute(['collid' => $progcollid]);
     $school = $schoolStmt->fetch();
 }
 
-// Get department info
+
 if ($deptid){
     $deptDetailStmt = $db->prepare("SELECT * FROM departments WHERE deptid = :deptid");
     $deptDetailStmt->execute(['deptid' => $deptid]);
     $department = $deptDetailStmt->fetch();
     
-    // Get programs for this department
+    
     $progStmt = $db->prepare("SELECT * FROM programs WHERE progcolldeptid = :deptid");
     $progStmt->execute(['deptid' => $deptid]);
     $programs = $progStmt->fetchAll();

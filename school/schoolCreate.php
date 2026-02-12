@@ -3,15 +3,6 @@
    session_regenerate_id();
 ?>
 
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Create</title>
-    <link rel="stylesheet" href="../styles/styles.css">
-</head>
-<body> -->
     <h1>School Create</h1>
     <span>
         <?php echo $_SESSION['messages']['createSuccess'] ?? null; ?>
@@ -61,5 +52,3 @@
             </tr>
         </table>
     </form>    
-<!-- </body>
-</html> -->
