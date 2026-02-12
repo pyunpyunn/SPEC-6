@@ -63,4 +63,42 @@ if($_POST && isset($_POST['saveChanges'])){
     }
 }
 
+if($_POST && isset($_POST['confirmDelete'])){
+    $schoolID = $_POST['schoolID'] ?? null;
+    if($schoolID){
+        try {
+            $db->beginTransaction();
+
+            $delStudents = $db->prepare("DELETE FROM students WHERE studcollid = :collid");
+            $delStudents->execute(['collid' => $schoolID]);
+
+            $delPrograms = $db->prepare("DELETE FROM programs WHERE progcollid = :collid");
+            $delPrograms->execute(['collid' => $schoolID]);
+
+            $delDepartments = $db->prepare("DELETE FROM departments WHERE deptcollid = :collid");
+            $delDepartments->execute(['collid' => $schoolID]);
+
+            $delCollege = $db->prepare("DELETE FROM colleges WHERE collid = :collid");
+            $res = $delCollege->execute(['collid' => $schoolID]);
+
+            $db->commit();
+
+            if($res){
+                $_SESSION['messages']['deleteSuccess'] = "School deleted";
+                $_SESSION['messages']['deleteError'] = "";
+            } else {
+                $_SESSION['messages']['deleteError'] = "Failed to delete school";
+                $_SESSION['messages']['deleteSuccess'] = "";
+            }
+        } catch (Exception $e) {
+            if($db->inTransaction()) $db->rollBack();
+            $_SESSION['messages']['deleteError'] = "Failed to delete school: " . $e->getMessage();
+            $_SESSION['messages']['deleteSuccess'] = "";
+        }
+    }
+
+    header("Location: index.php?section=school&page=schoolList", true, 302);
+    exit;
+}
+
 ?>
