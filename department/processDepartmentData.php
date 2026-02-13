@@ -57,9 +57,17 @@ if($_POST && isset($_POST['saveNewDepartmentEntry'])){
     if(empty($_SESSION['errors']['deptID']) && empty($_SESSION['errors']['deptFullName']) && empty($_SESSION['errors']['deptShortName']) && empty($_SESSION['errors']['deptCollID'])){
         $stmt = $db->prepare("INSERT INTO departments (deptid, deptfullname, deptshortname, deptcollid) VALUES (:deptid, :deptfullname, :deptshortname, :deptcollid)");
         $res = $stmt->execute(['deptid'=>$deptID,'deptfullname'=>$deptFullName,'deptshortname'=>$deptShortName,'deptcollid'=>$deptCollID]);
-        if($res) $_SESSION['messages']['createSuccess'] = "Department entry created successfully";
-        else $_SESSION['messages']['createError'] = "Failed to create department entry";
-        header("Location: $entryURL", true, 301);
+        if($res) {
+            $_SESSION['messages']['createSuccess'] = "Department entry created successfully";
+            $redirectColl = $deptCollID;
+            header("Location: index.php?section=department&page=departmentList&deptcollid=" . urlencode($redirectColl), true, 302);
+            exit;
+        }
+        else {
+            $_SESSION['messages']['createError'] = "Failed to create department entry";
+            header("Location: $entryURL", true, 301);
+            exit;
+        }
     } else header("Location: $entryURL", true, 301);
 }
 
@@ -128,6 +136,11 @@ if($_POST && isset($_POST['saveDepartmentChanges'])){
 
 if($_POST && isset($_POST['confirmDeleteDepartment'])){
     $deptid = $_POST['deptid'];
+    // get the college id for redirect after deletion
+    $getColl = $db->prepare("SELECT deptcollid FROM departments WHERE deptid = :deptid");
+    $getColl->execute(['deptid' => $deptid]);
+    $collRow = $getColl->fetch();
+    $redirectColl = $collRow['deptcollid'] ?? null;
     
     $delStudents = $db->prepare("DELETE s FROM students s JOIN programs p ON s.studprogid = p.progid WHERE p.progcolldeptid = :deptid");
     $delStudents->execute(['deptid' => $deptid]);
@@ -139,5 +152,9 @@ if($_POST && isset($_POST['confirmDeleteDepartment'])){
     $res = $delDept->execute(['deptid' => $deptid]);
     if($res) $_SESSION['messages']['updateSuccess'] = "Department deleted";
     else $_SESSION['messages']['updateError'] = "Failed to delete department";
+    if(!empty($redirectColl)){
+        header("Location: index.php?section=department&page=departmentList&deptcollid=" . urlencode($redirectColl), true, 302);
+        exit;
+    }
     header("Location: $entryURL", true, 301);
 }

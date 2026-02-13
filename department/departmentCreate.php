@@ -3,6 +3,7 @@ session_start();
 session_regenerate_id();
 require_once("data/db.php");
 
+$deptcollid = $_GET['deptcollid'] ?? $_SESSION['input']['deptCollID'] ?? '';
 ?>
 <h1>Department Create</h1>
 <span>
@@ -28,14 +29,14 @@ require_once("data/db.php");
         </tr>
         <tr>
             <td>College ID:</td>
-            <td><input type="text" id="deptCollID" name="deptCollID" value="<?= $_SESSION['input']['deptCollID'] ?? null; ?>" class="data-input"></td>
+            <td><input type="text" id="deptCollID" name="deptCollID" value="<?= htmlspecialchars($deptcollid); ?>" class="data-input"></td>
             <td><span><?php echo $_SESSION['errors']['deptCollID'] ?? null; ?></span></td>
         </tr>
         <tr>
             <td colspan="2">
                 <button type="submit" name="saveNewDepartmentEntry" class="btn">Save New Department Entry</button>
                 <button type="submit" name="clearEntries" class="btn">Reset Form</button>
-                <a href="index.php?section=department&page=departmentList&deptcollid=<?php echo urlencode($_SESSION['input']['deptCollID'] ?? ''); ?>" class="btn btn-danger">Exit</a>
+                <a href="index.php?section=department&page=departmentList&deptcollid=<?php echo urlencode($deptcollid); ?>" class="btn btn-danger">Exit</a>
             </td>
         </tr>
     </table>
